@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "abaqus-mcp-server": {
+      "type": "local",
+      "command": [
+        "python",
+        "C:\\path\\to\\abaqus-mcp-opencode\\mcp_server_autostart.py"
+      ]
+    }
+  }
+}

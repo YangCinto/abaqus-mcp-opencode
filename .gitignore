@@ -1,0 +1,44 @@
+# Runtime IPC state
+commands/
+results/
+scripts/
+screenshots/
+status.json
+stop.flag
+
+# Logs
+*.log
+autostart.log
+mcp.log
+abaqus_mcp_backend.*.log
+gui_error.txt
+
+# Abaqus generated files
+*.rpy
+*.rec
+*.jnl
+*.cae
+*.inp
+*.odb
+*.odb_f
+*.dat
+*.msg
+*.sta
+*.stt
+*.prt
+*.res
+*.mdl
+*.com
+*.env
+*.sim
+*.lck
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "abaqus-mcp-server": {
+      "command": "python",
+      "args": [
+        "C:/path/to/abaqus-mcp-opencode/mcp_server_autostart.py"
+      ]
+    }
+  }
+}
