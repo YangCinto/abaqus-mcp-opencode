@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Example 1: Bullet vs Plate",
+    "parts": [
+      {
+        "name": "BULLET",
+        "nodeCount": 0,
+        "elementCount": 0
+      },
+      {
+        "name": "PLATE",
+        "nodeCount": 0,
+        "elementCount": 0
+      }
+    ],
+    "steps": {
+      "Penetration": {
+        "totalTime": 0.0,
+        "numFrames": 51,
+        "maxMisesStress": 2130174592.0,
+        "frames": [
+          {
+            "frameId": 0,
+            "frameValue": 0.0,
+            "description": "Increment         0: Step Time = 0.0"
+          },
+          {
+            "frameId": 1,
+            "frameValue": 4.106509095436195e-06,
+            "description": "Increment        24: Step Time =   4.1065E-06"
+          },
+          {
+            "frameId": 2,
+            "frameValue": 8.079872714006342e-06,
+            "description": "Increment        42: Step Time =   8.0799E-06"
+          }
+        ],
+        "lastFrame": {
+          "frameId": 50,
+          "frameValue": 0.00019999999494757503,
+          "description": "Increment      2722: Step Time =   2.0000E-04"
+        }
+      }
+    },
+    "frameCount": 51
+  },
+  {
+    "name": "Example 2: Bullet vs Pipe",
+    "parts": [
+      {
+        "name": "BULLET",
+        "nodeCount": 0,
+        "elementCount": 0
+      },
+      {
+        "name": "PIPE",
+        "nodeCount": 0,
+        "elementCount": 0
+      }
+    ],
+    "steps": {
+      "Penetration": {
+        "totalTime": 0.0,
+        "numFrames": 51,
+        "maxMisesStress": 2113701504.0,
+        "frames": [
+          {
+            "frameId": 0,
+            "frameValue": 0.0,
+            "description": "Increment         0: Step Time = 0.0"
+          },
+          {
+            "frameId": 1,
+            "frameValue": 6.086906523705693e-06,
+            "description": "Increment        36: Step Time =   6.0869E-06"
+          },
+          {
+            "frameId": 2,
+            "frameValue": 1.2000543392787222e-05,
+            "description": "Increment        83: Step Time =   1.2001E-05"
+          }
+        ],
+        "lastFrame": {
+          "frameId": 50,
+          "frameValue": 0.0003000000142492354,
+          "description": "Increment      5002: Step Time =   3.0000E-04"
+        }
+      }
+    },
+    "frameCount": 51
+  }
+]

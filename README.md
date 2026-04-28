@@ -134,51 +134,62 @@ pong (v4.0.0)
 
 Case studies show what this project can do from a user's point of view: a natural-language request goes in, and Abaqus scripts, solver jobs, result databases, screenshots, or reports come out.
 
-### Case Study 1: Bullet Impact on a Steel Plate
+The current shared example set is based on [`examples/bullet-impact-cases/`](examples/bullet-impact-cases/), which contains two Abaqus/Explicit impact simulations generated and verified through the MCP workflow:
+
+- a 7.62 mm bullet penetrating a 10 mm steel plate
+- a 7.62 mm bullet radially impacting a steel pipe at the axial center
+
+The local solver outputs such as `.odb`, `.inp`, `.abq`, `.mdl`, and `.pac` are not committed because they are large and machine-specific. The repository keeps the scripts, ODB summary, Markdown report, and result images needed to understand and reproduce the cases.
+
+### Case Study 1: 7.62 mm Bullet Penetrating a 10 mm Steel Plate
 
 **User task in natural language**
 
 ```text
-Create an Abaqus/Explicit simulation of a bullet penetrating a steel plate. Generate the model, submit the job, and extract the final stress, plastic strain, and bullet displacement summary.
+Create an Abaqus/Explicit simulation of a 7.62 mm bullet penetrating a 10 mm steel plate at 850 m/s. Build the model, run the job, read the ODB, and summarize the final stress result.
 ```
 
 **What the AI agent completed**
 
-- Generated an Abaqus Python script for the plate, projectile, materials, contact, boundary conditions, and initial velocity.
-- Built a 200 mm x 200 mm x 10 mm mild steel plate and a hardened steel bullet with a small flat tip for mesh stability.
-- Created an Abaqus/Explicit impact step with general contact and friction.
-- Applied clamped boundary conditions to the plate edges and an initial bullet velocity of 800 m/s.
-- Wrote the Abaqus input file, ran a datacheck, submitted the explicit job, and confirmed successful completion.
-- Opened the ODB and extracted final-frame result metrics using an Abaqus Python post-processing script.
+- Generated an Abaqus Python script for the plate, projectile, materials, explicit step, contact, boundary conditions, mesh, and job definition.
+- Built a 200 mm x 200 mm x 10 mm structural steel plate.
+- Built a 7.62 mm diameter, 30 mm long equivalent bullet.
+- Assigned steel plasticity and a very high-strength bullet material.
+- Applied 850 m/s initial velocity to the bullet.
+- Submitted the Abaqus/Explicit job and verified that the run completed.
+- Opened the ODB and extracted frame count, final step time, and maximum von Mises stress.
+- Exported a result image for README/report use.
 
 **Model and analysis setup**
 
 | Item | Value |
 | --- | --- |
-| Geometry | 0.20 m square plate, 0.010 m thick; bullet radius 0.005 m, total length 0.030 m |
-| Materials | Mild steel plate and hardened steel bullet |
+| Geometry | 200 mm x 200 mm x 10 mm plate; 7.62 mm diameter, 30 mm long bullet |
+| Materials | Structural steel plate and high-strength steel bullet |
 | Solver | Abaqus/Explicit 2024 |
-| Step time | `8.0e-5 s` |
-| Contact | General contact, hard normal behavior, friction coefficient 0.12 |
-| Loading | Bullet initial velocity = 800 m/s in the negative Z direction |
+| Step time | `2.0e-4 s` |
+| Element type | C3D8R |
+| Mesh size | Plate seed size 2 mm; bullet seed size 2 mm |
+| Loading | Bullet initial velocity = 850 m/s in the negative Z direction |
 | Status | Analysis completed successfully |
 
 **Generated result files**
 
 Files included in this repository:
 
-- [`examples/bullet-plate-penetration/create_bullet_plate_penetration.py`](examples/bullet-plate-penetration/create_bullet_plate_penetration.py)
-- [`examples/bullet-plate-penetration/postprocess_bullet_plate.py`](examples/bullet-plate-penetration/postprocess_bullet_plate.py)
-- [`examples/bullet-plate-penetration/README_bullet_plate_penetration.md`](examples/bullet-plate-penetration/README_bullet_plate_penetration.md)
-- [`examples/bullet-plate-penetration/images/bullet_plate_result.png`](examples/bullet-plate-penetration/images/bullet_plate_result.png)
+- [`examples/bullet-impact-cases/example1_plate.py`](examples/bullet-impact-cases/example1_plate.py)
+- [`examples/bullet-impact-cases/read_odb.py`](examples/bullet-impact-cases/read_odb.py)
+- [`examples/bullet-impact-cases/odb_summary.json`](examples/bullet-impact-cases/odb_summary.json)
+- [`examples/bullet-impact-cases/report.md`](examples/bullet-impact-cases/report.md)
+- [`examples/bullet-impact-cases/images/bullet_plate_impact_result.png`](examples/bullet-impact-cases/images/bullet_plate_impact_result.png)
 
 Files generated during the local Abaqus run:
 
-- `bullet_plate_penetration.cae`
-- `bullet_plate_penetration.inp`
-- `bullet_plate_penetration.odb`
-- `bullet_plate_penetration.sta`
-- `bullet_plate_penetration.dat`
+- `bullet_plate_impact.inp`
+- `bullet_plate_impact.odb`
+- `bullet_plate_impact.sta`
+- `bullet_plate_impact.dat`
+- `bullet_plate_impact.log`
 
 Large solver outputs such as `.odb` and `.inp` are intentionally not committed by default because they can be large and machine-specific.
 
@@ -186,69 +197,75 @@ Large solver outputs such as `.odb` and `.inp` are intentionally not committed b
 
 | Output | Value |
 | --- | --- |
-| Frames | 21 |
-| Final step time | `7.9999998e-05 s` |
-| Maximum PEEQ | 28.2147 |
-| Maximum von Mises stress | `1.600e9 Pa` |
-| Average bullet U3 | `-0.01945 m` |
+| Elements | 50,270 |
+| Nodes | 61,606 |
+| Frames | 51 |
+| Final step time | `2.0000e-4 s` |
+| Maximum von Mises stress | `2.13e9 Pa` |
+| Local analysis time | about 106 s |
 
 **Result preview**
 
-![Bullet impact result](examples/bullet-plate-penetration/images/bullet_plate_result.png)
+![7.62 mm bullet penetrating a 10 mm steel plate](examples/bullet-impact-cases/images/bullet_plate_impact_result.png)
 
 **Capability demonstrated**
 
-This case shows a higher-dynamics workflow: the AI agent creates an Abaqus/Explicit impact model, handles contact setup, runs the solver, and uses a post-processing script to read final ODB outputs. It demonstrates how natural-language instructions can drive a complete impact simulation workflow rather than only generating a standalone script.
+This case demonstrates a complete high-speed impact workflow: natural language to Abaqus Python, explicit dynamics setup, solver execution, ODB reading, and report-ready result visualization. It is useful for showing that the MCP workflow can handle more than static script generation.
 
 **Cost**
 
 LLM Cost: about `~&yen;0.5` using DeepSeek for this simple simulation automation task. This estimate includes only LLM/API token usage. It does not include Abaqus software licensing, local computing resources, storage, or solver runtime.
 
-### Case Study 2: Axial Crushing of a Steel Tube
+### Case Study 2: 7.62 mm Bullet Radial Impact on a Steel Pipe
 
 **User task in natural language**
 
 ```text
-Create an Abaqus simulation of a circular steel tube under axial compression. Build the model, run the analysis, extract the main stress/displacement results, and generate a short report.
+Create an Abaqus/Explicit simulation of a 7.62 mm bullet radially penetrating a steel pipe at the axial center. Run the model, read the ODB, and compare the stress level with the steel plate impact case.
 ```
 
 **What the AI agent completed**
 
-- Generated an Abaqus Python script for a 3D deformable circular tube model.
-- Defined steel material behavior with elastic and plastic hardening data.
-- Created a Static General analysis step with geometric nonlinearity enabled.
-- Applied a fixed boundary condition at the lower end and a 10 mm axial compression displacement at the upper end.
-- Meshed the tube with C3D8R solid elements.
-- Submitted the Abaqus/Standard job and confirmed successful completion.
-- Read the result database and summarized key outputs in a Markdown report.
+- Generated an Abaqus Python script for a pipe impact model.
+- Built a 100 mm outer diameter, 80 mm inner diameter, 300 mm long steel pipe.
+- Built the same 7.62 mm diameter, 30 mm long equivalent bullet used in the plate case.
+- Positioned the bullet for radial impact at the pipe axial center.
+- Applied 850 m/s initial velocity toward the pipe wall.
+- Fixed both pipe ends and ran the Abaqus/Explicit penetration step.
+- Extracted ODB metadata and maximum von Mises stress.
+- Compared the pipe impact result with the plate impact result in a Markdown report.
 
 **Model and analysis setup**
 
 | Item | Value |
 | --- | --- |
-| Geometry | Circular tube, OD 50 mm, ID 40 mm, length 200 mm |
-| Material | Steel, E = 210 GPa, nu = 0.3, yield stress = 250 MPa |
-| Solver | Abaqus/Standard 2024, Static General |
-| Nonlinearity | `nlgeom=ON` |
-| Mesh | C3D8R, global seed size 2.5 mm |
-| Loading | Upper-end axial displacement `U3 = -10 mm` |
-| Status | Analysis completed successfully in 26 increments |
+| Geometry | Pipe OD 100 mm, ID 80 mm, length 300 mm; 7.62 mm diameter, 30 mm long bullet |
+| Materials | Structural steel pipe and high-strength steel bullet |
+| Solver | Abaqus/Explicit 2024 |
+| Step time | `3.0e-4 s` |
+| Element type | C3D8R |
+| Mesh size | Pipe seed size 3 mm; bullet seed size 2 mm |
+| Loading | Bullet initial velocity = 850 m/s in the negative Y direction |
+| Boundary condition | Both pipe ends fixed |
+| Status | Analysis completed successfully |
 
 **Generated result files**
 
 Files included in this repository:
 
-- [`examples/pipe-axial-crush/pipe_axial_crush.py`](examples/pipe-axial-crush/pipe_axial_crush.py)
-- [`examples/pipe-axial-crush/pipe_axial_crush_report.md`](examples/pipe-axial-crush/pipe_axial_crush_report.md)
-- [`examples/pipe-axial-crush/images/`](examples/pipe-axial-crush/images/)
+- [`examples/bullet-impact-cases/example2_pipe.py`](examples/bullet-impact-cases/example2_pipe.py)
+- [`examples/bullet-impact-cases/read_odb.py`](examples/bullet-impact-cases/read_odb.py)
+- [`examples/bullet-impact-cases/odb_summary.json`](examples/bullet-impact-cases/odb_summary.json)
+- [`examples/bullet-impact-cases/report.md`](examples/bullet-impact-cases/report.md)
+- [`examples/bullet-impact-cases/images/bullet_pipe_impact_result.png`](examples/bullet-impact-cases/images/bullet_pipe_impact_result.png)
 
 Files generated during the local Abaqus run:
 
-- `PipeAxialCrush.odb`
-- `PipeAxialCrush.inp`
-- `PipeAxialCrush.sta`
-- `PipeAxialCrush.msg`
-- `PipeAxialCrush.dat`
+- `bullet_pipe_impact.inp`
+- `bullet_pipe_impact.odb`
+- `bullet_pipe_impact.sta`
+- `bullet_pipe_impact.dat`
+- `bullet_pipe_impact.log`
 
 Large solver outputs such as `.odb` and `.inp` are intentionally not committed by default because they can be large and machine-specific.
 
@@ -256,29 +273,38 @@ Large solver outputs such as `.odb` and `.inp` are intentionally not committed b
 
 | Output | Value |
 | --- | --- |
-| Maximum von Mises stress | 336.5 MPa |
-| Maximum axial displacement U3 | 10.000 mm |
-| Maximum reaction force | 2462.7 N |
-| Final step time | 1.000 |
+| Elements | 39,370 |
+| Nodes | 49,486 |
+| Frames | 51 |
+| Final step time | `3.0000e-4 s` |
+| Maximum von Mises stress | `2.11e9 Pa` |
+| Local analysis time | about 143 s |
 
-**Result previews**
+**Result preview**
 
-The images below are generated from the example run and stored with relative paths so they render on GitHub.
-
-![Pipe axial crush overview](examples/pipe-axial-crush/images/pipe_axial_crush_overview.png)
-
-| Preview | Preview |
-| --- | --- |
-| ![Pipe axial crush result 1](examples/pipe-axial-crush/images/7216d89e4599208801cd1baf17ca3f86.png) | ![Pipe axial crush result 2](examples/pipe-axial-crush/images/6e2476a118e627786a33a5894e77931f.png) |
-| ![Pipe axial crush result 3](examples/pipe-axial-crush/images/3dce79a919eb3e0402a8c69ae09e3b37.png) | ![Pipe axial crush result 4](examples/pipe-axial-crush/images/29d05982fa8ea975e3d11dd9659b4247.png) |
+![7.62 mm bullet radial impact on a steel pipe](examples/bullet-impact-cases/images/bullet_pipe_impact_result.png)
 
 **Capability demonstrated**
 
-This case shows the end-to-end value of the MCP workflow: the user describes an engineering problem, the AI agent writes Abaqus Python, runs a nonlinear static simulation, extracts numerical results, and produces a readable engineering report. It demonstrates practical automation for routine structural simulation tasks rather than only isolated script generation.
+This case demonstrates that the same AI-assisted workflow can be reused for a different target geometry and impact direction. It is useful for showing parameterized modeling, geometry changes, job submission, ODB extraction, and side-by-side engineering comparison across related simulations.
 
 **Cost**
 
 LLM Cost: about `~&yen;0.5` using DeepSeek for this simple simulation automation task. This estimate includes only LLM/API token usage. It does not include Abaqus software licensing, local computing resources, storage, or solver runtime.
+
+### Case Study Comparison
+
+| Metric | Bullet vs Plate | Bullet vs Pipe |
+| --- | --- | --- |
+| Target | 10 mm steel plate | 10 mm wall steel pipe |
+| Bullet speed | 850 m/s | 850 m/s |
+| Elements | 50,270 | 39,370 |
+| Nodes | 61,606 | 49,486 |
+| Maximum von Mises stress | 2.13 GPa | 2.11 GPa |
+| Step time | 200 microseconds | 300 microseconds |
+| Local analysis time | about 106 s | about 143 s |
+
+The two examples show how an AI agent can build related Abaqus models, run both jobs, extract comparable ODB metrics, and turn the results into a concise engineering report. The workflow is especially useful when a user wants to explore several variants without manually rewriting Abaqus Python each time.
 
 ## Cost Efficiency
 
